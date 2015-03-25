@@ -33,7 +33,6 @@ func (req request) Do() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	reader := bufio.NewReader(conn)
 	writer := bufio.NewWriter(conn)
 	_, err = writer.WriteString(fmt.Sprintf("%s\t%1.2f\t%d]\r\n", req.source, req.param1, req.param2))
 	if err != nil {
@@ -43,9 +42,15 @@ func (req request) Do() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	line, err := reader.ReadString('\n')
-	if err != nil {
+	scanner := bufio.NewScanner(conn)
+	list := make([]string, 0)
+	for scanner.Scan() {
+		if scanner.Text() != "\r\n" && scanner.Text() != "" {
+			list = append(list, strings.Trim(scanner.Text(), "\r\n"))
+		}
+	}
+	if err := scanner.Err(); err != nil {
 		return nil, err
 	}
-	return strings.Split(strings.Trim(line, "\r\n"), " "), nil
+	return list, nil
 }

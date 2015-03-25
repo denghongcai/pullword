@@ -1,6 +1,6 @@
 Pullword
 ========
-Golang package for [pullword.com](http://pullword.com).
+A Golang package for [pullword.com](http://pullword.com).
 
 ###Install
 ````bash
